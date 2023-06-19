@@ -1,0 +1,25 @@
+---
+- name: install apache container
+  hosts: prod
+  become: true
+  
+  pre_tasks:
+    - name: download pip script
+      get_url:
+        url: https://bootstrap.pypa.io/pip/2.7/get-pip.py
+        dest: /tmp/get-pip.py
+
+    - name: install python-pip
+      command: python2.7 /tmp/get-pip.py
+
+    - name: install docker-py
+      ansible.builtin.pip:
+        name: docker-py
+
+  tasks:
+    - name: create web app
+      docker_container:
+        name: apache
+        image: httpd
+        ports:
+          - "80:80"
