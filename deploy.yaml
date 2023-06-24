@@ -16,10 +16,27 @@
       ansible.builtin.pip:
         name: docker-py
 
+    - name: install packages
+      ansible.builtin.yum:
+        name: '{{ item }}'
+        state: present
+      when: ansible_distribution == "CentOS"
+      loop:
+          - epel-release
+          - wget
+          - git
+
   tasks:
+    - name: copy index.html.j2
+      ansible.builtin.template:
+        src: templates/index.html.j2
+        dest: /home/admin/index.html
+
     - name: create web app
       docker_container:
         name: apache
         image: httpd
         ports:
           - "80:80"
+        volumes:
+          - /home/admin/index.html:/usr/local/apache2/htdocs/index.html
