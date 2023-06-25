@@ -2,6 +2,8 @@
 - name: install apache container
   hosts: prod
   become: true
+  vars_files:
+    - files/secrets/credentials.yaml
   
   pre_tasks:
     - name: download pip script
